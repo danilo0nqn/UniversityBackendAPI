@@ -13,5 +13,8 @@ namespace University.Models.DataModels
         [Required]
         public DateTime DateOfBirth { get; set; }
 
+        public ICollection<Course> Courses { get; set; } = new List<Course>(); // a student can be in many courses
+
+
     }
 }

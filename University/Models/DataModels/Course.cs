@@ -4,10 +4,10 @@ namespace University.Models.DataModels
 {
     public enum Level
     {
-        Basic = 0,
-        Medium = 1,
-        Advanced = 2,
-        Expert = 3,
+        Basic,
+        Medium,
+        Advanced,
+        Expert,
     }
     public class Course : BaseEntity
     {
@@ -17,6 +17,7 @@ namespace University.Models.DataModels
         [Required, StringLength(280)]
         public string ShortDescription { get; set; } = string.Empty;
 
+        [Required]
         public string Description { get; set; } = string.Empty;
 
         [Required]
@@ -28,5 +29,10 @@ namespace University.Models.DataModels
         [Required]
         public Level Level { get; set; } = Level.Basic;
 
+        public ICollection<Category> Categories { get; set; } = new List<Category>(); // A course can belong (have) a list of categories.
+
+        public ICollection<Student> Students { get; set; } = new List<Student>(); // A course can have many students
+
+        public Chapter? Chapter { get; set; }
     }
 }

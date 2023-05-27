@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using University.DataAccess;
 using University.Models.DataModels;
@@ -25,12 +27,31 @@ namespace University.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-          if (_context.Students == null)
-          {
-              return NotFound();
-          }
+            if (_context.Students == null)
+            {
+                return NotFound();
+            }
             return await _context.Students.ToListAsync();
         }
+
+        [Route("olderThan18")]
+        [HttpGet]
+        public List<Student> GetStudentOlderThan18()
+        {
+            int currentYear = DateTime.Now.Year;
+            var studentsOlderThan18 = _context.Students
+                .Where(student => currentYear - student.DateOfBirth.Year > 18)
+                .ToList();
+
+            if (studentsOlderThan18.Count == 0)
+            {
+                throw new Exception("Can't find adults.");
+            }
+
+            return studentsOlderThan18;
+        }
+
+
 
         // GET: api/Students/5
         [HttpGet("{id}")]

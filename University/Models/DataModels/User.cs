@@ -15,5 +15,7 @@ namespace University.Models.DataModels
 
         [Required]
         public string Password { get; set; } = string.Empty;
+
+        public Student? Student { get; set; }
     }
 }

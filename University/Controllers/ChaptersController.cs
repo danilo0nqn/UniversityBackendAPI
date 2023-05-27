@@ -12,56 +12,55 @@ namespace University.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class ChaptersController : ControllerBase
     {
         private readonly UniversityDBContext _context;
 
-        public UsersController(UniversityDBContext context)
+        public ChaptersController(UniversityDBContext context)
         {
             _context = context;
         }
 
-        // GET: api/Users
+        // GET: api/Chapters
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<Chapter>>> GetChapter()
         {
-          if (_context.Users == null)
+          if (_context.Chapter == null)
           {
               return NotFound();
           }
-            return await _context.Users.ToListAsync();
+            return await _context.Chapter.ToListAsync();
         }
-        
 
-        // GET: api/Users/5
+        // GET: api/Chapters/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<Chapter>> GetChapter(int id)
         {
-          if (_context.Users == null)
+          if (_context.Chapter == null)
           {
               return NotFound();
           }
-            var user = await _context.Users.FindAsync(id);
+            var chapter = await _context.Chapter.FindAsync(id);
 
-            if (user == null)
+            if (chapter == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return chapter;
         }
 
-        // PUT: api/Users/5
+        // PUT: api/Chapters/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUser(int id, User user)
+        public async Task<IActionResult> PutChapter(int id, Chapter chapter)
         {
-            if (id != user.Id)
+            if (id != chapter.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(user).State = EntityState.Modified;
+            _context.Entry(chapter).State = EntityState.Modified;
 
             try
             {
@@ -69,7 +68,7 @@ namespace University.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!UserExists(id))
+                if (!ChapterExists(id))
                 {
                     return NotFound();
                 }
@@ -82,44 +81,44 @@ namespace University.Controllers
             return NoContent();
         }
 
-        // POST: api/Users
+        // POST: api/Chapters
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> PostUser(User user)
+        public async Task<ActionResult<Chapter>> PostChapter(Chapter chapter)
         {
-          if (_context.Users == null)
+          if (_context.Chapter == null)
           {
-              return Problem("Entity set 'UniversityDBContext.Users'  is null.");
+              return Problem("Entity set 'UniversityDBContext.Chapter'  is null.");
           }
-            _context.Users.Add(user);
+            _context.Chapter.Add(chapter);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUser", new { id = user.Id }, user);
+            return CreatedAtAction("GetChapter", new { id = chapter.Id }, chapter);
         }
 
-        // DELETE: api/Users/5
+        // DELETE: api/Chapters/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteChapter(int id)
         {
-            if (_context.Users == null)
+            if (_context.Chapter == null)
             {
                 return NotFound();
             }
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var chapter = await _context.Chapter.FindAsync(id);
+            if (chapter == null)
             {
                 return NotFound();
             }
 
-            _context.Users.Remove(user);
+            _context.Chapter.Remove(chapter);
             await _context.SaveChangesAsync();
 
             return NoContent();
         }
 
-        private bool UserExists(int id)
+        private bool ChapterExists(int id)
         {
-            return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Chapter?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
