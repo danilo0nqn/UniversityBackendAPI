@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using University.DataAccess;
 using University.Models.DataModels;
+using University.Services;
 
 namespace University.Controllers
 {
@@ -15,20 +16,22 @@ namespace University.Controllers
     public class CoursesController : ControllerBase
     {
         private readonly UniversityDBContext _context;
+        private readonly ICourseService _courseService;
 
-        public CoursesController(UniversityDBContext context)
+        public CoursesController(UniversityDBContext context, ICourseService courseService)
         {
             _context = context;
+            _courseService = courseService;
         }
 
         // GET: api/Courses
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Course>>> GetCourses()
         {
-          if (_context.Courses == null)
-          {
-              return NotFound();
-          }
+            if (_context.Courses == null)
+            {
+                return NotFound();
+            }
             return await _context.Courses.ToListAsync();
         }
 
@@ -36,10 +39,10 @@ namespace University.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Course>> GetCourse(int id)
         {
-          if (_context.Courses == null)
-          {
-              return NotFound();
-          }
+            if (_context.Courses == null)
+            {
+                return NotFound();
+            }
             var course = await _context.Courses.FindAsync(id);
 
             if (course == null)
@@ -49,6 +52,31 @@ namespace University.Controllers
 
             return course;
         }
+
+        [Route("Courses Of Specified Category")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesinXLevel(Level level)
+        {
+            var coursesInThisLevel = await _courseService.GetCoursesinXLevel(level);
+            return coursesInThisLevel.ToList();
+        }
+
+        [Route("Courses Without Chapters")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesWithoutChapter()
+        {
+            var coursesWithoutChapter = await _courseService.GetCoursesWithoutChapter();
+            return coursesWithoutChapter.ToList();
+        }
+
+        [Route("Course of Specified Student")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Course>>> GetCoursesOfStudent(int studentId)
+        {
+            var coursesOfSpecifiedStudent = await _courseService.GetCoursesOfStudent(studentId);
+            return coursesOfSpecifiedStudent.ToList();  
+        }
+
 
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

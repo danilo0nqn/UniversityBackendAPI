@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using University.DataAccess;
 using University.Models.DataModels;
+using University.Services;
 
 namespace University.Controllers
 {
@@ -18,9 +19,14 @@ namespace University.Controllers
     {
         private readonly UniversityDBContext _context;
 
-        public StudentsController(UniversityDBContext context)
+        //Service
+        private readonly IStudentService _studentsService;
+
+
+        public StudentsController(UniversityDBContext context, IStudentService studentsService)
         {
             _context = context;
+            _studentsService = studentsService;
         }
 
         // GET: api/Students
@@ -34,23 +40,30 @@ namespace University.Controllers
             return await _context.Students.ToListAsync();
         }
 
-        [Route("olderThan18")]
+        [Route("StudentsOlderThan18")]
         [HttpGet]
-        public List<Student> GetStudentOlderThan18()
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudentOlderThan18()
         {
-            int currentYear = DateTime.Now.Year;
-            var studentsOlderThan18 = _context.Students
-                .Where(student => currentYear - student.DateOfBirth.Year > 18)
-                .ToList();
-
-            if (studentsOlderThan18.Count == 0)
-            {
-                throw new Exception("Can't find adults.");
-            }
-
-            return studentsOlderThan18;
+            var studentsOlderThan18 = await _studentsService.GetStudentsOlderThan18();
+            
+            return studentsOlderThan18.ToList();
         }
 
+        [Route("InactiveStudents")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Student>>> GetInactiveStudents()
+        {
+            var inactiveStudents = await _studentsService.GetInactiveStudents();
+            return inactiveStudents.ToList();
+        }
+
+        [Route("StudentsInSpecifiedCourse")]
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Student>>> GetStudentsInCourse(int courseID)
+        {
+            var studentsInCourse = await _studentsService.GetStudentsInCourse(courseID);
+            return studentsInCourse.ToList();
+        }
 
 
         // GET: api/Students/5

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using University.DataAccess;
 using University.Models.DataModels;
+using University.Services;
 
 namespace University.Controllers
 {
@@ -15,10 +16,12 @@ namespace University.Controllers
     public class ChaptersController : ControllerBase
     {
         private readonly UniversityDBContext _context;
+        private readonly IChapterService _chapterService;
 
-        public ChaptersController(UniversityDBContext context)
+        public ChaptersController(UniversityDBContext context, IChapterService chapterService)
         {
             _context = context;
+            _chapterService = chapterService;
         }
 
         // GET: api/Chapters
@@ -49,6 +52,15 @@ namespace University.Controllers
 
             return chapter;
         }
+
+        [Route("Chapter of specified course")]
+        [HttpGet]
+        public async Task<ActionResult<Chapter>> GetChapterOfCourse(int courseId)
+        {
+            var chapterOfCourse = await _chapterService.GetChapterOfCourse(courseId);
+            return chapterOfCourse;
+        }
+
 
         // PUT: api/Chapters/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754

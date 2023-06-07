@@ -4,9 +4,13 @@ namespace University.Models.DataModels
 {
     public enum Level
     {
+        [Display(Name = "Basic")]
         Basic,
+        [Display(Name = "Medium")]
         Medium,
+        [Display(Name = "Advanced")]
         Advanced,
+        [Display(Name = "Expert")]
         Expert,
     }
     public class Course : BaseEntity
