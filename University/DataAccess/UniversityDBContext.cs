@@ -15,7 +15,7 @@ namespace University.DataAccess
         public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<University.Models.DataModels.Chapter>? Chapter { get; set; }
+        public DbSet<Chapter>? Chapter { get; set; }
 
     }
 }
