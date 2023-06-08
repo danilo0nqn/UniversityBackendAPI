@@ -17,6 +17,8 @@ namespace University.Helpers
             _jwtSettings = jwtSettings;
         }
 
+        //Example Users
+        //TODO: Change to real users in DB
         private IEnumerable<User> Logins = new List<User>()
         {
             new User()

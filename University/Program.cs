@@ -1,5 +1,7 @@
 //Usings to work with entity frameworks
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using University;
 using University.DataAccess;
 using University.Services;
 
@@ -16,8 +18,7 @@ builder.Services.AddDbContext<UniversityDBContext>(options => options.UseSqlServ
 
 
 // 7. Add Service of JWT Autorization
-// TODO:
-//builder.Services.addJwtTokenServices(builder.Configuration);
+builder.Services.AddJwtTokenServices(builder.Configuration);
 
 
 
@@ -33,11 +34,45 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICourseService, CourseService>();
 builder.Services.AddScoped<IChapterService, ChapterService>();
 
+//8. Add Authorization Policy
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("UserOnlyPolicy", policy => policy.RequireClaim("UserOnly", "User1"));
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
-//8. TODO: Config Swagger to take care of Autorization of JWT
-builder.Services.AddSwaggerGen();
+//9. Config Swagger to take care of Autorization of JWT
+builder.Services.AddSwaggerGen(options =>
+    {
+    //We define the security for authorization
+        options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+        {
+            Name = "Authorization",
+            Type = SecuritySchemeType.Http,
+            Scheme = "Bearer",
+            BearerFormat = "JWT",
+            In = ParameterLocation.Header,
+            Description = "JWT Authorization Header using Bearer Scheme"
+        });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                new string[]{}
+            }
+        });
+    }
+);
 
 
 //5. CORS Configuration
