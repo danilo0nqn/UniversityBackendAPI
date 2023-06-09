@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -64,6 +67,7 @@ namespace University.Controllers
 
         // PUT: api/Chapters/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutChapter(int id, Chapter chapter)
         {
@@ -95,6 +99,7 @@ namespace University.Controllers
 
         // POST: api/Chapters
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult<Chapter>> PostChapter(Chapter chapter)
         {
@@ -109,6 +114,7 @@ namespace University.Controllers
         }
 
         // DELETE: api/Chapters/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteChapter(int id)
         {

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
@@ -86,6 +89,7 @@ namespace University.Controllers
 
         // PUT: api/Students/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudent(int id, Student student)
         {
@@ -117,6 +121,7 @@ namespace University.Controllers
 
         // POST: api/Students
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent(Student student)
         {
@@ -131,6 +136,7 @@ namespace University.Controllers
         }
 
         // DELETE: api/Students/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {

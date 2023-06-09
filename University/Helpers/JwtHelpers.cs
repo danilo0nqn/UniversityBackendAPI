@@ -7,7 +7,7 @@ namespace University.Helpers
 {
     public static class JwtHelpers
     {
-        public static IEnumerable<Claim> GetClaims(this userTokens userAccounts, Guid id)
+        public static IEnumerable<Claim> GetClaims(this UserTokens userAccounts, Guid id)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -18,10 +18,10 @@ namespace University.Helpers
                 new Claim(ClaimTypes.Expiration, DateTime.UtcNow.AddDays(1).ToString("MMM ddd dd yyy HH:mm:ss tt")),
             };
 
-            if (userAccounts.UserName == "Admin")
+            if (userAccounts.UserType == "Admin")
             {
                 claims.Add(new Claim(ClaimTypes.Role, "Administrator"));
-            } else if(userAccounts.UserName == "User 1")
+            } else if(userAccounts.UserType == "User 1")
             {
                 claims.Add(new Claim(ClaimTypes.Role, "User"));
                 claims.Add(new Claim("UserOnly", "User 1"));
@@ -30,17 +30,17 @@ namespace University.Helpers
             return claims;
         }
 
-        public static IEnumerable<Claim> GetClaims(this userTokens userAccounts, out Guid id)
+        public static IEnumerable<Claim> GetClaims(this UserTokens userAccounts, out Guid id)
         {
             id = Guid.NewGuid();
             return GetClaims(userAccounts, id);
         }
 
-        public static userTokens GenTokenKey(userTokens model, JwtSettings jwtSettings)
+        public static UserTokens GenTokenKey(UserTokens model, JwtSettings jwtSettings)
         {
             try
             {
-                var userToken = new userTokens();
+                var userToken = new UserTokens();
                 if (model == null)
                 {
                     throw new ArgumentNullException(nameof(model));
@@ -73,7 +73,7 @@ namespace University.Helpers
                     );
 
                 userToken.Token = new JwtSecurityTokenHandler().WriteToken(jwToken);
-                userToken.UserName = model.UserName;
+                userToken.UserType = model.UserType;
                 userToken.Id = model.Id;
                 userToken.GuidId = Id;
 

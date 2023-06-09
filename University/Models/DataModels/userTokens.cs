@@ -1,9 +1,10 @@
 ﻿namespace University.Models.DataModels
 {
-    public class userTokens
+    public class UserTokens
     {
         public int Id { get; set; }
         public string Token { get; set; }
+        public string UserType { get; set; }
         public string UserName { get; set; }
         public TimeSpan Validity { get; set; }
         public string RefreshToken { get; set; }

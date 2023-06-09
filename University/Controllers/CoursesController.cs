@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -80,6 +83,7 @@ namespace University.Controllers
 
         // PUT: api/Courses/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCourse(int id, Course course)
         {
@@ -111,6 +115,7 @@ namespace University.Controllers
 
         // POST: api/Courses
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         [HttpPost]
         public async Task<ActionResult<Course>> PostCourse(Course course)
         {
@@ -125,6 +130,7 @@ namespace University.Controllers
         }
 
         // DELETE: api/Courses/5
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrator")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCourse(int id)
         {
