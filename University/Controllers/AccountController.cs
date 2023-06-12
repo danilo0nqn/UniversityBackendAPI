@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using University.DataAccess;
 using University.Helpers;
 using University.Models.DataModels;
@@ -15,11 +16,13 @@ namespace University.Controllers
     {
         private readonly JwtSettings _jwtSettings;
         private readonly UniversityDBContext _context;
+        private readonly IStringLocalizer<AccountController> _stringLocalizer;
 
-        public AccountController(JwtSettings jwtSettings, UniversityDBContext context)
+        public AccountController(JwtSettings jwtSettings, UniversityDBContext context, IStringLocalizer<AccountController> stringLocalize)
         {
             _jwtSettings = jwtSettings;
             _context = context;
+            _stringLocalizer = stringLocalize;
         }
 
 
@@ -28,6 +31,10 @@ namespace University.Controllers
         {
             try
             {
+                var welcomeMessage = string.Format(_stringLocalizer.GetString("Welcome"), userLogin.UserName);
+                var postName = _stringLocalizer.GetString("Welcome").Value ?? string.Empty;
+                var todayIs = _stringLocalizer["Welcome"];
+
                 var Token = new UserTokens();
 
                 var user = await _context.Users.FirstOrDefaultAsync(user => user.Name == userLogin.UserName);
@@ -47,7 +54,11 @@ namespace University.Controllers
                 {
                     return BadRequest("Wrong Password");
                 }
-                return Ok(Token);
+                return Ok(new
+                    {
+                    Welcome = welcomeMessage,
+                    Token = Token
+                    });
             }
             catch (Exception ex)
             {
