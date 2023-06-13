@@ -4,8 +4,20 @@ using Microsoft.OpenApi.Models;
 using University;
 using University.DataAccess;
 using University.Services;
+//13. Use Serilog to log events
+using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+//14. Config Serilog
+builder.Host.UseSerilog((hostBuilderCtx, loggerConf) =>
+{
+    loggerConf
+    .WriteTo.Console()
+    .WriteTo.Debug()
+    .ReadFrom.Configuration(hostBuilderCtx.Configuration);
+});
 
 
 //2. Connection with SQL server Express
@@ -20,7 +32,7 @@ builder.Services.AddDbContext<UniversityDBContext>(options => options.UseSqlServ
 // 7. Add Service of JWT Autorization
 builder.Services.AddJwtTokenServices(builder.Configuration);
 
-// 9. Add localization service
+// 10. Add localization service
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
 
@@ -91,14 +103,14 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-//10. Supported cultures
+//11. Supported cultures
 var supportedCultures = new[] { "en-US", "es-ES", "fr-FR", "de-DE" };
 var localizationOptions = new RequestLocalizationOptions()
     .SetDefaultCulture(supportedCultures[0])
     .AddSupportedCultures(supportedCultures)
     .AddSupportedUICultures(supportedCultures);
 
-//11.Add Localization to app
+//12.Add Localization to app
 app.UseRequestLocalization(localizationOptions);
 
 
@@ -108,6 +120,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//15. Tell app to use Serilog
+app.UseSerilogRequestLogging();
+
 
 app.UseHttpsRedirection();
 
